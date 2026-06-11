@@ -8,6 +8,14 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+// Nuevas rutas para Proyecto
+
+const connectDB = require('./config/db');
+const authRouter = require('./routes/auth.routes');
+const productRouter = require('./routes/product.routes');
+
+// Conectar a la base de datos
+connectDB();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,5 +45,12 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+// Añadiendo el codigo abajo ya que no se nada del codigo de arribo y no deseo romperlo
+
+app.use(express.json());
+app.use('/api/auth', authRouter);
+app.use('/api/products', productRouter);
 
 module.exports = app;

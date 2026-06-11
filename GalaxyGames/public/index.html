@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Galaxy Games - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+    <div class="container mt-5">
+        <h1 class="text-center text-primary mb-4">Galaxy Games</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card bg-secondary text-white">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Acceso</h3>
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label>Usuario</label>
+                                <input type="text" id="username" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Contraseña</label>
+                                <input type="password" id="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Guardar rol y usuario en LocalStorage para simular la sesión
+                localStorage.setItem('role', data.role);
+                localStorage.setItem('username', data.username);
+
+                // Redirección basada en rol
+                if (data.role === 'Administrador') {
+                    window.location.href = '/admin.html';
+                } else {
+                    window.location.href = '/cliente.html';
+                }
+            } else {
+                alert(data.error);
+            }
+        });
+    </script>
+</body>
+</html>
