@@ -3,10 +3,7 @@ const User = require('../models/user.model');
 
 const connectDB = async () => {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/galaxygames', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect('mongodb://127.0.0.1:27017/galaxygames');
         console.log('MongoDB conectado a Galaxy Games');
 
         // Crear administrador por defecto si no existe
