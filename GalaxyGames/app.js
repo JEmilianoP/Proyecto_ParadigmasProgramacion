@@ -27,6 +27,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Añadiendo el codigo abajo ya que no se nada del codigo de arribo y no deseo romperlo
+
+// Problema con bloque 404, movido arriba para evitar error
+app.use('/api/auth', authRouter);
+app.use('/api/products', productRouter);
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
@@ -45,12 +51,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-// Añadiendo el codigo abajo ya que no se nada del codigo de arribo y no deseo romperlo
-
-app.use(express.json());
-app.use('/api/auth', authRouter);
-app.use('/api/products', productRouter);
 
 module.exports = app;
