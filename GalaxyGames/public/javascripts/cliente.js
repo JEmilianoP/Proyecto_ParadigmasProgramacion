@@ -120,11 +120,35 @@ function renderCart() {
     checkoutBtn.disabled = false;
 }
 
-document.getElementById('checkoutBtn').addEventListener('click', () => {
-    alert('¡Compra realizada con éxito! Gracias por elegir Galaxy Games.');
-    cart = [];
-    loadProducts();
-    renderCart();
+document.getElementById('checkoutBtn').addEventListener('click', async () => {
+    // Evitar procesar un carrito vacío
+    if (cart.length === 0) return;
+
+    try {
+        // Enviar el carrito al backend
+        const response = await fetch('/api/products/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cart: cart }) // Mandar el arreglo de productos
+        });
+
+        if (response.ok) {
+            alert('¡Compra realizada con éxito! Gracias por elegir Galaxy Games.');
+            
+            // Vaciar el carrito en el frontend
+            cart = []; 
+            renderCart(); 
+            
+            // Recargar los productos desde el servidor para ver el stock actualizado
+            loadProducts(); 
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Hubo un problema al procesar tu compra.');
+        }
+    } catch (error) {
+        console.error('Error al realizar el pago:', error);
+        alert('Error de conexión al intentar procesar el pago.');
+    }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {

@@ -44,6 +44,26 @@ class ProductController {
             res.status(400).json({ error: 'Error al eliminar producto' });
         }
     }
+
+    // Procesar compra del cliente
+    static async checkout(req, res) {
+        try {
+            const { cart } = req.body; // Recibo el arreglo del carrito desde el frontend
+
+            // Recorremos cada producto comprado y actualizamos su stock en MongoDB
+            for (let item of cart) {
+                await Product.findByIdAndUpdate(item._id, {
+                    // $inc resta la cantidad que el cliente compró al stock actual
+                    $inc: { stock: -item.quantity } 
+                });
+            }
+
+            res.status(200).json({ message: 'Compra procesada y stock actualizado' });
+        } catch (error) {
+            console.error('Error en checkout:', error);
+            res.status(500).json({ error: 'Error al procesar la compra en la base de datos' });
+        }
+    }
 }
 
 module.exports = ProductController;
